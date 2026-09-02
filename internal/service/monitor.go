@@ -24,6 +24,11 @@ func (s *MonitorService) CreateMonitor(URL string, interval time.Duration) (*mod
 	if URL == "" {
 		return nil, errors.New("URL cannot be empty")
 	}
+
+	if interval <= 0 {
+		return nil, errors.New("interval must be positive")
+	}
+
 	monitor := &model.Monitor{
 		ID:       generateID(),
 		URL:      URL,
