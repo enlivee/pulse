@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Monitor struct {
-	ID       string
-	URL      string
-	Interval time.Duration
+	ID       string        `json:"id"`
+	URL      string        `json:"url"`
+	Interval time.Duration `json:"interval"`
 }

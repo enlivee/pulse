@@ -1,9 +1,9 @@
 package repository
 
 import (
-	"sync"
-	"github.com/enlivee/pulse/internal/model"
 	"errors"
+	"github.com/enlivee/pulse/internal/model"
+	"sync"
 )
 
 type InMemoryRepository struct {
@@ -48,7 +48,7 @@ func (r *InMemoryRepository) GetMonitors() ([]*model.Monitor, error) {
 	return monitors, nil
 }
 
-func (r *InMemoryRepository) DeleteMonitor(id string) error{
+func (r *InMemoryRepository) DeleteMonitor(id string) error {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 	delete(r.monitors, id)

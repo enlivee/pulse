@@ -17,7 +17,7 @@ func TestMonitorService_CreateMonitor(t *testing.T) {
 
 	t.Run("ошибка при пустом URL", func(t *testing.T) {
 		monitor, err := svc.CreateMonitor("", time.Minute)
-		
+
 		if err == nil {
 			t.Fatal("ожидалась ошибка, получено nil")
 		}
@@ -44,7 +44,7 @@ func TestMonitorService_CreateMonitor(t *testing.T) {
 		if monitor.Interval != interval {
 			t.Errorf("неверный Interval: got %v, want %v", monitor.Interval, interval)
 		}
-		
+
 		// Проверка генерации валидного UUID
 		if _, err := uuid.Parse(monitor.ID); err != nil {
 			t.Errorf("ID не является валидным UUID: %v", err)
@@ -130,9 +130,9 @@ func TestMonitorService_CreateCheck(t *testing.T) {
 
 	t.Run("успешный чек (2xx) и передача в repository", func(t *testing.T) {
 		before := time.Now()
-		
+
 		check, err := svc.CreateCheck(monitorID, 200, 150*time.Millisecond)
-		
+
 		after := time.Now()
 		if err != nil {
 			t.Fatalf("неожиданная ошибка: %v", err)
@@ -187,7 +187,7 @@ func TestMonitorService_GetHistory(t *testing.T) {
 
 	monitorID := "monitor-history"
 	_ = repo.CreateMonitor(&model.Monitor{ID: monitorID, URL: "https://test.com"})
-	
+
 	_, _ = svc.CreateCheck(monitorID, 200, 10*time.Millisecond)
 	_, _ = svc.CreateCheck(monitorID, 500, 20*time.Millisecond)
 
