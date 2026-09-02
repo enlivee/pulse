@@ -1,0 +1,3 @@
+module github.com/enlivee/pulse
+
+go 1.27.0
