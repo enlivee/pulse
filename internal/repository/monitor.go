@@ -1,6 +1,6 @@
 package repository
 
-import "..."
+import "github.com/enlivee/pulse/internal/model"
 
 type Repository interface {
 	CreateMonitor(monitor *model.Monitor) error
