@@ -1,19 +1,27 @@
 package main
 
-// import (
-// 	"time"
-// 	"net/http"
-// )
+import (
+	"net/http"
 
+	"github.com/enlivee/pulse/internal/handler"
+	"github.com/enlivee/pulse/internal/repository"
+	"github.com/enlivee/pulse/internal/service"
+)
 
-// func (m *Monitor) CreateMonitorHandler(w http.ResponseWriter, r *http.Request) {}
+func main() {
+	repo := repository.NewInMemoryRepository()
+	service := service.NewMonitorService(repo)
+	handler := handler.NewMonitorHandler(service)
 
-// func (m *Monitor) GetMonitorsHandler(w http.ResponseWriter, r *http.Request) {}
+	mux := http.NewServeMux()
 
-// func (m *Monitor) GetMonitorByIdHandler(w http.ResponseWriter, r *http.Request) {}
+	mux.HandleFunc("GET /monitors", handler.GetMonitors)
+	mux.HandleFunc("POST /monitors", handler.CreateMonitor)
+	mux.HandleFunc("GET /monitors/{id}", handler.GetMonitor)
+	mux.HandleFunc("DELETE /monitors/{id}", handler.DeleteMonitor)
 
-// func (m *Monitor) DeleteMonitorHandler(w http.ResponseWriter, r *http.Request) {}
-
-// func (c *Check) CreateCheckHandler(w http.ResponseWriter, r *http.Request) {}
-
-// func (c *Check) GetHistoryHandler(w http.ResponseWriter, r *http.Request) {}
+	err := http.ListenAndServe(":8080", mux)
+	if err != nil {
+		panic(err)
+	}
+}
