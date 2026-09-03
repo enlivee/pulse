@@ -19,6 +19,8 @@ func main() {
 	mux.HandleFunc("POST /monitors", handler.CreateMonitor)
 	mux.HandleFunc("GET /monitors/{id}", handler.GetMonitor)
 	mux.HandleFunc("DELETE /monitors/{id}", handler.DeleteMonitor)
+	mux.HandleFunc("POST /monitors/{id}/check", handler.CreateCheck)
+	mux.HandleFunc("GET /monitors/{id}/history", handler.GetHistory)
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {

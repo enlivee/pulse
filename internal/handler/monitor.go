@@ -77,3 +77,35 @@ func (h *MonitorHandler) DeleteMonitor(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (h *MonitorHandler) CreateCheck(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	check, err := h.service.CheckMonitor(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound) // доделать статус коды
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(check); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *MonitorHandler) GetHistory(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	history, err := h.service.GetHistory(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(history); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

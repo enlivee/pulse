@@ -2,10 +2,12 @@ package service
 
 import (
 	"errors"
+	"net/http"
+	"time"
+
 	"github.com/enlivee/pulse/internal/model"
 	"github.com/enlivee/pulse/internal/repository"
 	"github.com/google/uuid"
-	"time"
 )
 
 type MonitorService struct {
@@ -67,4 +69,46 @@ func (s *MonitorService) CreateCheck(monitorID string, statusCode int, responseT
 
 func (s *MonitorService) GetHistory(monitorID string) ([]*model.Check, error) {
 	return s.rep.GetHistory(monitorID)
+}
+
+func (s *MonitorService) CheckMonitor(monitorID string) (*model.Check, error) {
+	monitor, err := s.rep.GetMonitor(monitorID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	start := time.Now()
+
+	client := &http.Client{}
+	resp, err := client.Get(monitor.URL)
+
+	responseTime := time.Since(start)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if resp == nil {
+		return nil, errors.New("No response received from the monitor URL")
+	}
+
+	defer resp.Body.Close()
+
+	var check *model.Check
+
+	check = &model.Check{
+		MonitorID:  monitorID,
+		Time:       time.Now(),
+		StatusCode: resp.StatusCode,
+		Latency:    responseTime,
+		Success:    resp.StatusCode >= 200 && resp.StatusCode < 300,
+	}
+	err = s.rep.CreateCheck(check)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return check, nil
 }
